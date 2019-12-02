@@ -8,4 +8,8 @@ import (
 type Container = dig.Container
 
 // Definition ...
-type Definition = interface{}
+type Definition struct {
+	constructor interface{}
+	name        string
+	group       string
+}

@@ -6,28 +6,66 @@ import (
 
 var taskAliases = []string{"tasks", "t"}
 
-// Task ...
-var Task map[string]*cobra.Command
+// NewCreateTaskCommand ...
+func NewCreateTaskCommand() *CreateContentCommand {
+	cmd := &CreateContentCommand{&cobra.Command{}}
+	cmd.Use = "task"
+	cmd.Aliases = taskAliases
+	cmd.Short = "Create a new task"
+	cmd.RunE = unimplemented()
 
-func init() {
-	Task = NewTaskCommand()
+	cmd.PersistentFlags().StringP("data", "d", "", "set data(default: \"\")")
+
+	return cmd
 }
 
-// NewTaskCommand ...
-func NewTaskCommand() map[string]*cobra.Command {
-	cmd := map[string]*cobra.Command{
-		"new":    newCommand("task", taskAliases...),
-		"list":   newCommand("task", taskAliases...),
-		"get":    newCommand("task -i TASK_ID", taskAliases...),
-		"modify": newCommand("task -i TASK_ID", taskAliases...),
-		"remove": newCommand("task -i TASK_ID", taskAliases...),
-	}
+// NewListTaskCommand ...
+func NewListTaskCommand() *ListContentCommand {
+	cmd := &ListContentCommand{&cobra.Command{}}
+	cmd.Use = "task"
+	cmd.Aliases = taskAliases
+	cmd.Short = "List tasks"
+	cmd.RunE = unimplemented()
 
-	cmd["new"].PersistentFlags().StringP("data", "d", "", "set data(default: \"\")")
-	cmd["get"].PersistentFlags().StringP("id", "i", "", "find by task id")
-	cmd["modify"].PersistentFlags().StringP("id", "i", "", "find by task id")
-	cmd["modify"].PersistentFlags().StringP("data", "d", "", "set data")
-	cmd["remove"].PersistentFlags().StringP("id", "i", "", "find by task id")
+	return cmd
+}
+
+// NewGetTaskCommand ...
+func NewGetTaskCommand() *GetContentCommand {
+	cmd := &GetContentCommand{&cobra.Command{}}
+	cmd.Use = "task -i TASK_ID"
+	cmd.Aliases = taskAliases
+	cmd.Short = "get a task"
+	cmd.RunE = unimplemented()
+
+	cmd.PersistentFlags().StringP("id", "i", "", "find by task id")
+
+	return cmd
+}
+
+// NewModifyTaskCommand ...
+func NewModifyTaskCommand() *ModifyContentCommand {
+	cmd := &ModifyContentCommand{&cobra.Command{}}
+	cmd.Use = "task -i TASK_ID"
+	cmd.Aliases = taskAliases
+	cmd.Short = "modify a task"
+	cmd.RunE = unimplemented()
+
+	cmd.PersistentFlags().StringP("id", "i", "", "find by task id")
+	cmd.PersistentFlags().StringP("data", "d", "", "set data")
+
+	return cmd
+}
+
+// NewRemoveTaskCommand ...
+func NewRemoveTaskCommand() *RemoveContentCommand {
+	cmd := &RemoveContentCommand{&cobra.Command{}}
+	cmd.Use = "task -i TASK_ID"
+	cmd.Aliases = taskAliases
+	cmd.Short = "remove a task"
+	cmd.RunE = unimplemented()
+
+	cmd.PersistentFlags().StringP("id", "i", "", "find by task id")
 
 	return cmd
 }

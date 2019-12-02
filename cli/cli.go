@@ -8,96 +8,24 @@ import (
 	"github.com/spf13/viper"
 )
 
-var b Builder
-
-func init() {
-	r := NewRootCommand()
-	os := NewOperationCommands()
-
-	b = New().Root(r).Operations(os...)
-}
-
-// Builder defines ...
-type Builder interface {
-	Root(cmd *cobra.Command) Builder
-	Operations(cmds ...*cobra.Command) Builder
-	Targets(cmds ...map[string]*cobra.Command) Builder
-	Build() App
-}
-
-// App defines ...
-type App interface {
-	Pre(func(*cobra.Command, []string) error)
+// AppProvider ...
+type AppProvider interface {
 	Run()
-	Post(func(*cobra.Command, []string) error)
-}
-
-type builder struct {
-	root       *cobra.Command
-	operations map[string]*cobra.Command
-	targets    map[string][]*cobra.Command
-}
-
-// New builds cli builder.
-func New() Builder {
-	return &builder{
-		operations: map[string]*cobra.Command{},
-		targets:    map[string][]*cobra.Command{},
-	}
-}
-
-func (b *builder) Root(cmd *cobra.Command) Builder {
-	b.root = cmd
-	return b
-}
-
-func (b *builder) Operations(cmds ...*cobra.Command) Builder {
-	operations := map[string]*cobra.Command{}
-	for _, c := range cmds {
-		operations[c.Name()] = c
-	}
-	b.operations = update(b.operations, operations)
-
-	return b
-}
-
-// Targets ...
-func Targets(targets ...map[string]*cobra.Command) Builder { return b.Targets(targets...) }
-func (b *builder) Targets(targets ...map[string]*cobra.Command) Builder {
-	b.targets = merge(b.targets, list(targets...))
-
-	return b
-}
-
-// Build ...
-func Build() App { return b.Build() }
-func (b *builder) Build() App {
-	// add target commands
-	for k, v := range b.targets {
-		b.operations[k].AddCommand(v...)
-	}
-
-	// add operation commands
-	operations := []*cobra.Command{}
-	for _, op := range b.operations {
-		operations = append(operations, op)
-	}
-	b.root.AddCommand(operations...)
-
-	return &app{cmd: b.root}
+	Command() *cobra.Command
 }
 
 type app struct {
-	cmd        *cobra.Command
+	cmd        *RootCommand
 	configFile string
 }
 
-func (a *app) Pre(f func(*cobra.Command, []string) error) {
-	a.cmd.PersistentPreRunE = f
+// New ...
+func New(root *RootCommand) AppProvider {
+	return &app{cmd: root}
 }
 
-func (a *app) Post(f func(*cobra.Command, []string) error) {
-	a.cmd.PersistentPostRunE = f
+func (a *app) Command() *cobra.Command {
+	return a.cmd.Command
 }
 
 func (a *app) Run() {

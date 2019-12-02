@@ -4,35 +4,72 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewOperationCommands ...
-func NewOperationCommands() []*cobra.Command {
-	cmds := []*cobra.Command{
-		&cobra.Command{
-			Use:     "new",
-			Aliases: []string{"n"},
-			Short:   "Create a new resource",
-		},
-		&cobra.Command{
-			Use:     "list",
-			Aliases: []string{"ls", "l"},
-			Short:   "List resources",
-		},
-		&cobra.Command{
-			Use:     "get",
-			Aliases: []string{"g"},
-			Short:   "Get a resource",
-		},
-		&cobra.Command{
-			Use:     "modify",
-			Aliases: []string{"mod", "m"},
-			Short:   "Modify a resource",
-		},
-		&cobra.Command{
-			Use:     "remove",
-			Aliases: []string{"rm", "r"},
-			Short:   "Remove a resource",
-		},
+// NewCreateCommand ...
+func NewCreateCommand(cmds []*CreateContentCommand) *OperationCommand {
+	cmd := &OperationCommand{&cobra.Command{}}
+	cmd.Use = "new"
+	cmd.Aliases = []string{"n"}
+	cmd.Short = "Create a new content"
+
+	for _, c := range cmds {
+		cmd.AddCommand(c.Command)
 	}
 
-	return cmds
+	return cmd
+}
+
+// NewListCommand ...
+func NewListCommand(cmds []*ListContentCommand) *OperationCommand {
+	cmd := &OperationCommand{&cobra.Command{}}
+	cmd.Use = "list"
+	cmd.Aliases = []string{"ls", "l"}
+	cmd.Short = "List resources"
+
+	for _, c := range cmds {
+		cmd.AddCommand(c.Command)
+	}
+
+	return cmd
+}
+
+// NewGetCommand ...
+func NewGetCommand(cmds []*GetContentCommand) *OperationCommand {
+	cmd := &OperationCommand{&cobra.Command{}}
+	cmd.Use = "get"
+	cmd.Aliases = []string{"g"}
+	cmd.Short = "Get a resource"
+
+	for _, c := range cmds {
+		cmd.AddCommand(c.Command)
+	}
+
+	return cmd
+}
+
+// NewModifyCommand ...
+func NewModifyCommand(cmds []*ModifyContentCommand) *OperationCommand {
+	cmd := &OperationCommand{&cobra.Command{}}
+	cmd.Use = "modify"
+	cmd.Aliases = []string{"mod", "m"}
+	cmd.Short = "Modify a resource"
+
+	for _, c := range cmds {
+		cmd.AddCommand(c.Command)
+	}
+
+	return cmd
+}
+
+// NewRemoveCommand ...
+func NewRemoveCommand(cmds []*RemoveContentCommand) *OperationCommand {
+	cmd := &OperationCommand{&cobra.Command{}}
+	cmd.Use = "remove"
+	cmd.Aliases = []string{"rm", "r"}
+	cmd.Short = "Remove a resource"
+
+	for _, c := range cmds {
+		cmd.AddCommand(c.Command)
+	}
+
+	return cmd
 }

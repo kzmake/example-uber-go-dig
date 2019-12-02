@@ -8,15 +8,14 @@ import (
 	"github.com/kzmake/example-uber-go-dig/usecase/interactor"
 )
 
-// NewCoreModules ...
-func NewCoreModules() []Definition {
+// NewCoreDefinitions ...
+func NewCoreDefinitions() []Definition {
 	defs := []Definition{
-
-		handler.NewTaskHandler,
-		controller.NewTaskController,
-		renderer.NewTaskRenderer,
-		interactor.NewCreateTaskInteractor,
-		presenter.NewCreateTaskPresenter,
+		{constructor: handler.NewTaskHandler},
+		{constructor: controller.NewTaskController},
+		{constructor: renderer.NewTaskRenderer},
+		{constructor: interactor.NewCreateTaskInteractor},
+		{constructor: presenter.NewCreateTaskPresenter},
 	}
 
 	return defs

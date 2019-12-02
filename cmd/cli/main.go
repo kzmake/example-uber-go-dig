@@ -12,11 +12,11 @@ import (
 )
 
 func main() {
-	modules := []di.Definition{}
-	modules = append(modules, di.NewCLIModules()...)
-	modules = append(modules, di.NewCoreModules()...)
+	defs := []di.Definition{}
+	defs = append(defs, di.NewCLIDefinitions()...)
+	defs = append(defs, di.NewCoreDefinitions()...)
 
-	c, err := di.NewContainer(modules...)
+	c, err := di.NewContainer(defs...)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -28,10 +28,10 @@ func main() {
 	}
 }
 
-func executor(c *di.Container) func(app cli.App) {
-	fn := func(app cli.App) {
-		// set
-		app.Pre(func(*cobra.Command, []string) error { return c.Invoke(register) })
+func executor(c *di.Container) func(app cli.AppProvider) {
+	fn := func(app cli.AppProvider) {
+		// set register
+		app.Command().PersistentPreRunE = func(cmd *cobra.Command, args []string) error { return c.Invoke(register) }
 
 		// run
 		app.Run()
@@ -40,6 +40,6 @@ func executor(c *di.Container) func(app cli.App) {
 	return fn
 }
 
-func register(targets map[string]map[string]*cobra.Command, task *handler.TaskHandler) {
-	targets["task"]["new"].RunE = task.CreateTask
+func register(cmds di.TaskCommands, taskHandler *handler.TaskHandler) {
+	cmds.CreateTask.RunE = taskHandler.CreateTask
 }

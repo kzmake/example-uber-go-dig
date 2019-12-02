@@ -11,8 +11,8 @@ func NewContainer(defs ...Definition) (*Container, error) {
 	container := dig.New()
 
 	for _, d := range defs {
-		if err := container.Provide(d); err != nil {
-			return nil, fmt.Errorf("di error: %v", err)
+		if err := container.Provide(d.constructor, dig.Name(d.name), dig.Group(d.group)); err != nil {
+			return nil, fmt.Errorf("failed injection: %v", err)
 		}
 	}
 
